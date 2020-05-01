@@ -8,12 +8,14 @@ import (
 
 func main() {
 	router := gin.Default()
-	messageRequestHandler := request_handler.NewMessageRequestHandler(repository.NewInMemoryMessageRepository())
+	messageRepository := repository.NewInMemoryMessageRepository()
+	messageChannel := make(chan string)
+	messageRequestHandler := request_handler.NewMessageRequestHandler(messageRepository, messageChannel)
 	router.POST("/messages", messageRequestHandler.SaveMessage)
 	router.GET("/messages", messageRequestHandler.GetMessages)
 	router.GET("/messages-board", messageRequestHandler.MessagesBoardPage)
 
-	messageWebSocketHandler := request_handler.NewMessageWebSocketHandler()
+	messageWebSocketHandler := request_handler.NewMessageWebSocketHandler(messageChannel)
 	router.GET("/message-ws", messageWebSocketHandler.Handle)
 
 	if err := router.Run(":3000"); err != nil {

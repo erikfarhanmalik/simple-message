@@ -2,11 +2,9 @@ package request_handler
 
 import (
 	"fmt"
-	"net/http"
-	"time"
-
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"net/http"
 )
 
 var wsUpgrader = websocket.Upgrader{
@@ -15,26 +13,28 @@ var wsUpgrader = websocket.Upgrader{
 }
 
 type MessageWebSocketHandler struct {
+	messageChannel chan string
 }
 
-func NewMessageWebSocketHandler() *MessageWebSocketHandler {
-	return &MessageWebSocketHandler{}
+func NewMessageWebSocketHandler(messageChannel chan string) *MessageWebSocketHandler {
+	return &MessageWebSocketHandler{messageChannel: messageChannel}
 }
 
 func (h *MessageWebSocketHandler) Handle(c *gin.Context) {
-	h.wsHandler(c.Writer, c.Request)
+	h.wsHandler(c.Writer, c.Request, h.messageChannel)
 }
 
-func (h *MessageWebSocketHandler) wsHandler(w http.ResponseWriter, r *http.Request) {
+func (h *MessageWebSocketHandler) wsHandler(w http.ResponseWriter, r *http.Request, messageChannel chan string) {
 	conn, err := wsUpgrader.Upgrade(w, r, nil)
 	if err != nil {
 		fmt.Printf("Failed to set websocket upgrade: %+v", err)
 		return
 	}
 	for {
-		time.Sleep(time.Second)
-		if err := conn.WriteMessage(websocket.TextMessage, []byte(time.Now().Format("2020-12-31"))); err != nil {
-			fmt.Printf("failed to write web socket message: %s", err)
+		for message := range messageChannel {
+			if err := conn.WriteMessage(websocket.TextMessage, []byte(message)); err != nil {
+				fmt.Printf("failed to write web socket message: %s", err)
+			}
 		}
 	}
 }

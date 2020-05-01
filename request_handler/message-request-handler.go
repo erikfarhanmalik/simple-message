@@ -14,10 +14,14 @@ import (
 
 type MessageRequestHandler struct {
 	messageRepository repository.MessageRepository
+	messageChannel    chan<- string
 }
 
-func NewMessageRequestHandler(messageRepository repository.MessageRepository) *MessageRequestHandler {
-	return &MessageRequestHandler{messageRepository: messageRepository}
+func NewMessageRequestHandler(messageRepository repository.MessageRepository, messageChannel chan<- string) *MessageRequestHandler {
+	return &MessageRequestHandler{
+		messageRepository: messageRepository,
+		messageChannel:    messageChannel,
+	}
 }
 
 func (h *MessageRequestHandler) SaveMessage(c *gin.Context) {
@@ -30,6 +34,7 @@ func (h *MessageRequestHandler) SaveMessage(c *gin.Context) {
 		handleRequestError(c, http.StatusInternalServerError, fmt.Errorf("failed to save message: %s", err).Error())
 		return
 	}
+	h.messageChannel <- message.Content
 	c.JSON(200, gin.H{
 		"message": message,
 	})
