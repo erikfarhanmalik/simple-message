@@ -34,7 +34,7 @@ func (h *MessageRequestHandler) SaveMessage(c *gin.Context) {
 		handleRequestError(c, http.StatusInternalServerError, fmt.Errorf("failed to save message: %s", err).Error())
 		return
 	}
-	h.messageChannel <- message.Content
+	go func() { h.messageChannel <- message.Content }()
 	c.JSON(200, gin.H{
 		"message": message,
 	})
