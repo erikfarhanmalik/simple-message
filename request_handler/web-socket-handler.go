@@ -33,11 +33,9 @@ func (h *MessageWebSocketHandler) Handle(c *gin.Context) {
 }
 
 func (h *MessageWebSocketHandler) messageSocketWriteHandler(writer webSocketMessageWriter) {
-	for {
-		for message := range h.messageChannel {
-			if err := writer.WriteMessage(websocket.TextMessage, []byte(message)); err != nil {
-				fmt.Printf("failed to write web socket message: %s", err)
-			}
+	for message := range h.messageChannel {
+		if err := writer.WriteMessage(websocket.TextMessage, []byte(message)); err != nil {
+			fmt.Printf("failed to write web socket message: %s", err)
 		}
 	}
 }
