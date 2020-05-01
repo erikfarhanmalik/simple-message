@@ -11,6 +11,7 @@ func main() {
 	messageRequestHandler := request_handler.NewMessageRequestHandler(repository.NewInMemoryMessageRepository())
 	router.POST("/messages", messageRequestHandler.SaveMessage)
 	router.GET("/messages", messageRequestHandler.GetMessages)
+	router.GET("/messages-board", messageRequestHandler.MessagesBoardPage)
 
 	if err := router.Run(":3000"); err != nil {
 		panic(err)

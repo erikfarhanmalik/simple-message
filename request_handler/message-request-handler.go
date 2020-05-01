@@ -2,6 +2,7 @@ package request_handler
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/erikfarhanmalik/simple-message/dto"
@@ -43,6 +44,14 @@ func (h *MessageRequestHandler) GetMessages(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": dto.CreateMessagesFromModels(messages),
 	})
+}
+
+func (h *MessageRequestHandler) MessagesBoardPage(c *gin.Context) {
+	page, err := ioutil.ReadFile("./html_pages/message-board.html")
+	if err != nil {
+		handleRequestError(c, http.StatusInternalServerError, fmt.Errorf("could not open html page: %s", err).Error())
+	}
+	c.Data(http.StatusOK, "text/html; charset=utf-8", page)
 }
 
 func handleRequestError(c *gin.Context, errorCode int, message string) {
