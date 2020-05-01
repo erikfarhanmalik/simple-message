@@ -16,8 +16,8 @@ type MessageRequestHandler struct {
 	messageRepository repository.MessageRepository
 }
 
-func NewMessageRequestHandler(messageRepository repository.MessageRepository) MessageRequestHandler {
-	return MessageRequestHandler{messageRepository: messageRepository}
+func NewMessageRequestHandler(messageRepository repository.MessageRepository) *MessageRequestHandler {
+	return &MessageRequestHandler{messageRepository: messageRepository}
 }
 
 func (h *MessageRequestHandler) SaveMessage(c *gin.Context) {

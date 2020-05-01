@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Message Board</title>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 </head>
 <body>
-    <h1>Messages</h1>
-    <div>
-        <ul>
-            <li>Message 1</li>
-            <li>Message 2</li>
-            <li>Message 3</li>
-        </ul>
-    </div>
+<h1>Messages: </h1>
+<div>
+    <ul id="messages"></ul>
+</div>
 </body>
+<script>
+    c = new WebSocket('ws://localhost:3000/message-ws');
+    c.onmessage = function (msg) {
+        $("#messages").append(`<li>${msg.data}</li>`);
+    };
+</script>
 </html>

@@ -13,6 +13,9 @@ func main() {
 	router.GET("/messages", messageRequestHandler.GetMessages)
 	router.GET("/messages-board", messageRequestHandler.MessagesBoardPage)
 
+	messageWebSocketHandler := request_handler.NewMessageWebSocketHandler()
+	router.GET("/message-ws", messageWebSocketHandler.Handle)
+
 	if err := router.Run(":3000"); err != nil {
 		panic(err)
 	}
