@@ -2,7 +2,8 @@ package main
 
 import (
 	"github.com/erikfarhanmalik/simple-message/repository"
-	request_handler "github.com/erikfarhanmalik/simple-message/request_handler"
+	"github.com/erikfarhanmalik/simple-message/request_handler"
+
 	"github.com/gin-gonic/gin"
 )
 
